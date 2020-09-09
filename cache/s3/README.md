@@ -21,6 +21,7 @@ The s3cache config supports the following properties:
 - `access_control_list` (string): the S3 access control to set on the file when putting the file. defaults to ''.
 - `cache_control` (string): the HTTP cache control header to set on the file when putting the file. defaults to ''.
 - `content_type` (string): the http MIME-type set on the file when putting the file. defaults to 'application/vnd.mapbox-vector-tile'.
+- `force_path_style` (boolean): [Optional] enable path style to support object stores with different path layouts like minio . defaults to 'false'
 
 
 ## Credential chain

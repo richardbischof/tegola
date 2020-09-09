@@ -40,15 +40,17 @@ const (
 	ConfigKeyACL            = "access_control_list" //	defaults to ""
 	ConfigKeyCacheControl   = "cache_control"       //	defaults to ""
 	ConfigKeyContentType    = "content_type"        //	defaults to "application/vnd.mapbox-vector-tile"
+	ConfigKeyForcePathStyle = "force_path_style"    // defaults to "false"
 )
 
 const (
-	DefaultBasepath    = ""
-	DefaultRegion      = "us-east-1"
-	DefaultAccessKey   = ""
-	DefaultSecretKey   = ""
-	DefaultContentType = mvt.MimeType
-	DefaultEndpoint    = ""
+	DefaultBasepath       = ""
+	DefaultRegion         = "us-east-1"
+	DefaultAccessKey      = ""
+	DefaultSecretKey      = ""
+	DefaultContentType    = mvt.MimeType
+	DefaultEndpoint       = ""
+	DefaultForcePathStyle = false
 )
 
 // testData is used during New() to confirm the ability to write, read and purge the cache
@@ -138,6 +140,15 @@ func New(config dict.Dicter) (cache.Interface, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	// support for different path layouts than aws-s3
+	// necessary for e.g. minio object store
+	forcePathStyle := DefaultForcePathStyle
+	forcePathStyle, err = config.Bool(ConfigKeyForcePathStyle, &forcePathStyle)
+	if err != nil {
+		return nil, err
+	}
+	awsConfig.S3ForcePathStyle = aws.Bool(forcePathStyle)
 
 	// support for static credentials, this is not recommended by AWS but
 	// necessary for some environments
